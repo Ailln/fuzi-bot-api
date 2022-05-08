@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fuzi-bot-api
+  namespace: fuzi
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      nodePort: 30101
+  selector:
+     app: fuzi-bot-api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fuzi-bot-api
+  namespace: fuzi
+spec:
+  selector:
+    matchLabels:
+      app: fuzi-bot-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: fuzi-bot-api
+    spec:
+      containers:
+      - name: fuzi-bot-api
+        image: fuzi-bot-api:1.0.0
+        ports:
+        - containerPort: 8080

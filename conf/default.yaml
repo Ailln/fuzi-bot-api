@@ -1,0 +1,13 @@
+nlu:
+  url: http://127.0.0.1:8081
+  max_suggestion_number: 5
+  
+nlg:
+  answer:
+    greet: 你好～
+    name: 我叫锅贴。
+    age: 喵龄一岁不到～
+    sex: 我是公的！
+    parents: Ailln 啊！
+    feature: 学猫叫，喵～喵～喵～
+    bye: 886

@@ -1,0 +1,6 @@
+cn2an==0.5.12
+ruamel.yaml==0.16.5
+aiohttp==3.7.4
+python-socketio==5.5.2
+python-engineio==4.3.1
+requests==2.26.0
