@@ -17,6 +17,8 @@
 6. fuzi-admin-api: 后台管理接口，与其他后端模块通信。
 7. fuzi-mark: 数据标注模块，标注用户的问题。
 
+![framework](.github/fuzi-framework.png)
+
 ## 2 快速上手
 
 ```shell
