@@ -1,9 +1,10 @@
+import os
 from requests import get, post
 
 from util.conf_util import get_conf
 
 conf = get_conf()
-nlu_url = conf["nlu"]["url"]
+nlu_url = os.environ.get("FUZI_NLU_URL", conf["nlu"]["url"])
 
 
 async def post_nlu(question):

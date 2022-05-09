@@ -36,12 +36,11 @@ python -m run.server
 ```shell
 git clone https://github.com/Ailln/fuzi-bot-api.git
 
-# in amd64
 cd fuzi-bot-api
 # 打包
-docker build -t fuzi-bot-api:1.0.0 .
+docker build -t fuzi-bot-api:1.0.1 .
 # 运行
-docker run -d --restart=always --name fuzi-bot-api -p 8080:8080 fuzi-bot-api:1.0.0
+docker run -d --restart=always --name fuzi-bot-api -p 8080:8080 fuzi-bot-api:1.0.1
 ```
 
 ### 3.2 Kubernetes

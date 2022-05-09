@@ -1,7 +1,7 @@
 nlu:
   url: http://127.0.0.1:8081
   max_suggestion_number: 5
-  
+
 nlg:
   answer:
     greet: 你好～
