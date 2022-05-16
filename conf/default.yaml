@@ -1,6 +1,13 @@
+app:
+  host: 0.0.0.0
+  port: 8080
+
 nlu:
   url: http://127.0.0.1:8081
   max_suggestion_number: 5
+
+search:
+  url: http://127.0.0.1:8082
 
 nlg:
   answer:

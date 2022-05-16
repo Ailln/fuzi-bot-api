@@ -6,7 +6,7 @@ from cn2an import transform
 
 from util.log_util import get_logger
 from util.conf_util import get_conf
-from util.request_util import post_nlu, get_questions
+from util.request_util import post_search, post_nlu, get_questions
 
 conf = get_conf()
 logger = get_logger(__name__)
@@ -27,10 +27,18 @@ async def chat_index(sid, data):
             if mode in ["cn2an", "an2cn"]:
                 answer = f"{transform(_msg, mode)}【by {mode}】"
             else:
-                intent = await post_nlu(data)
+                result = await post_search(data)
+                if len(result) == 1:
+                    intent = result[0]["intent"]
+                else:
+                    intent = await post_nlu(data)
                 answer = answer_dict[intent]
         else:
-            intent = await post_nlu(data)
+            result = await post_search(data)
+            if len(result) == 1:
+                intent = result[0]["intent"]
+            else:
+                intent = await post_nlu(data)
             answer = answer_dict[intent]
 
         logger.info(f"chat-request # answer: {answer}")
@@ -45,14 +53,18 @@ async def suggest_index(sid, data):
     logger.info(f"suggest-request # question: {data}")
     try:
         suggestion_list = []
-        questions = await get_questions()
         index = 0
-        for item in re.finditer(fr"^{data}.*", "\n".join(questions), re.MULTILINE):
-            index += 1
-            if index <= max_suggestion_number:
-                suggestion_list.append(item.group())
-            else:
-                break
+        if len(data) <= 2:
+            questions = get_questions()
+            for item in re.finditer(fr"^{data}.*", "\n".join(questions), re.MULTILINE):
+                index += 1
+                if index <= max_suggestion_number:
+                    suggestion_list.append(item.group())
+                else:
+                    break
+        else:
+            for item in await post_search(data, 0.8, max_suggestion_number):
+                suggestion_list.append(item["question"])
 
         logger.info(f"suggest-request # suggest_list: {suggestion_list}")
         await sio.emit(event="suggest-reply", data=suggestion_list, to=sid)
@@ -62,4 +74,4 @@ async def suggest_index(sid, data):
 
 
 if __name__ == "__main__":
-    web.run_app(app, host="0.0.0.0", port=8080)
+    web.run_app(app, host=conf["app"]["host"], port=conf["app"]["port"])

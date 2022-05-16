@@ -8,14 +8,15 @@
 
 ## 1 简介
 
-`夫子` 聊天机器人有 7 个模块组成：
+`夫子` 聊天机器人有 8 个模块组成：
 1. [fuzi-bot](https://github.com/Ailln/fuzi-bot): 聊天界面模块，与用户进行交互。
 2. [fuzi-bot-api](https://github.com/Ailln/fuzi-bot-api): 聊天接口模块，与其他后端模块通信。
 3. [fuzi-nlu](https://github.com/Ailln/fuzi-nlu): 自然语言处理模块，理解用户的问题。
-4. fuzi: 对话管理模块，推断用户的意图。
-5. fuzi-admin: 后台管理模块，管理机器人的设置。
-6. fuzi-admin-api: 后台管理接口，与其他后端模块通信。
-7. fuzi-mark: 数据标注模块，标注用户的问题。
+4. [fuzi-search](https://github.com/Ailln/fuzi-search): 语义检索模块，快速查找已有问题。
+5. fuzi: 对话管理模块，推断用户的意图。
+6. fuzi-admin: 后台管理模块，管理机器人的设置。
+7. fuzi-admin-api: 后台管理接口，与其他后端模块通信。
+8. fuzi-mark: 数据标注模块，标注用户的问题。
 
 ![framework](.github/fuzi-framework.png)
 
@@ -40,16 +41,19 @@ git clone https://github.com/Ailln/fuzi-bot-api.git
 
 cd fuzi-bot-api
 # 打包
-docker build -t fuzi-bot-api:1.0.1 .
+docker build -t fuzi-bot-api:1.0.2 .
 # 运行
-docker run -d --restart=always --name fuzi-bot-api -p 8080:8080 fuzi-bot-api:1.0.1
+docker run -d --restart=always --name fuzi-bot-api -p 8080:8080 fuzi-bot-api:1.0.2
 ```
 
 ### 3.2 Kubernetes
 
 ```shell
 cd fuzi-bot-api
-# 准备好镜像
+
+docker tag fuzi-bot-api:1.0.2 192.168.2.101:5000/fuzi-bot-api:1.0.2
+docker push 192.168.2.101:5000/fuzi-bot-api:1.0.2
+
 kubectl apply -f deploy/deployment.yaml
 ```
 

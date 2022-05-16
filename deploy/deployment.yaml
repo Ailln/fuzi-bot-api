@@ -28,9 +28,11 @@ spec:
     spec:
       containers:
       - name: fuzi-bot-api
-        image: 192.168.2.101:5000/fuzi-bot-api:1.0.1
+        image: 192.168.2.101:5000/fuzi-bot-api:1.0.2
         ports:
         - containerPort: 8080
         env:
+        - name: FUZI_SEARCH_URL
+          value: http://192.168.2.101:30103
         - name: FUZI_NLU_URL
           value: http://192.168.2.101:30102
