@@ -26,10 +26,17 @@
 git clone https://github.com/Ailln/fuzi-bot-api.git
 
 cd fuzi-bot-api
-# 安装依赖
-pip install -r requirements.txt
+# 本地系统环境开发
+pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+python -m server.main
+# 服务运行在 http://localhost:8080
 
-python -m run.server
+# 本地 docker 环境开发
+docker run -it --name fuzi-bot-api -v $PWD:/app \
+  -p 8080:8080 python:3.8.16-slim bash
+cd /app
+pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+python -m server.main
 ```
 
 ## 3 部署
@@ -37,23 +44,21 @@ python -m run.server
 ### 3.1 Docker
 
 ```shell
-git clone https://github.com/Ailln/fuzi-bot-api.git
-
 cd fuzi-bot-api
-# 打包
-docker build -t fuzi-bot-api:1.0.2 .
-# 运行
-docker run -d --restart=always --name fuzi-bot-api -p 8080:8080 fuzi-bot-api:1.0.2
+
+docker build -t fuzi-bot-api:1.0.0 .
+docker run -d --restart=always --name fuzi-bot-api \
+  -p 8080:8080 fuzi-bot-api:1.0.0
 ```
 
 ### 3.2 Kubernetes
 
 ```shell
+# 需要 docker registry
+docker tag fuzi-bot-api:1.0.2 192.168.2.101:5000/fuzi-bot-api:1.0.0
+docker push 192.168.2.101:5000/fuzi-bot-api:1.0.0
+
 cd fuzi-bot-api
-
-docker tag fuzi-bot-api:1.0.2 192.168.2.101:5000/fuzi-bot-api:1.0.2
-docker push 192.168.2.101:5000/fuzi-bot-api:1.0.2
-
 kubectl apply -f deploy/deployment.yaml
 ```
 
@@ -70,7 +75,3 @@ locust -f test/qps_test.py -H http://127.0.0.1:8080 -u 10 -r 2
 
 [![](https://award.dovolopor.com?lt=License&rt=Apache2&rbc=orange)](./LICENSE)
 [![](https://award.dovolopor.com?lt=Ailln's&rt=idea&lbc=lightgray&rbc=red&ltc=red)](https://github.com/Ailln/award)
-
-## 6 交流
-
-请添加微信号：`Ailln_`，备注「fuzi」，我邀请你进入交流群。
