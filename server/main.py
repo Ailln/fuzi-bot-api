@@ -2,7 +2,6 @@ import re
 
 from aiohttp import web
 from socketio import AsyncServer
-from cn2an import transform
 
 from util.log_util import get_logger
 from util.conf_util import get_conf
@@ -22,24 +21,19 @@ answer_dict = conf["nlg"]["answer"]
 async def chat_index(sid, data):
     logger.info(f"chat-request # question: {data}")
     try:
-        if ":" in data:
-            mode, _msg = data.split(":")
-            if mode in ["cn2an", "an2cn"]:
-                answer = f"{transform(_msg, mode)}【by {mode}】"
+        if "@@" in data:
+            model_type, _msg = data.split("@@")
+            if model_type in ["JointNLU", "ChatGLM-6B", "ChatGPT"]:
+                data = _msg
             else:
-                result = await post_search(data)
-                if len(result) == 1:
-                    intent = result[0]["intent"]
-                else:
-                    intent = await post_nlu(data)
-                answer = answer_dict[intent]
+                raise Exception(f"model type {model_type} not found!")
+
+        result = await post_search(data)
+        if len(result) == 1:
+            intent = result[0]["intent"]
         else:
-            result = await post_search(data)
-            if len(result) == 1:
-                intent = result[0]["intent"]
-            else:
-                intent = await post_nlu(data)
-            answer = answer_dict[intent]
+            intent = await post_nlu(data)
+        answer = answer_dict[intent]
 
         logger.info(f"chat-request # answer: {answer}")
         await sio.emit(event="chat-reply", data=answer, to=sid)
