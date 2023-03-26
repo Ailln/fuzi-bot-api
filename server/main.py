@@ -35,7 +35,7 @@ async def chat_index(sid, data):
                 if len(result) == 1:
                     intent = result[0]["intent"]
                 else:
-                    intent = await post_nlu(data)
+                    intent = await post_nlu(content)
                 answer = {
                     "role": "bot",
                     "content": answer_dict[intent]
