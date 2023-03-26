@@ -4,8 +4,20 @@ from requests import get, post
 from util.conf_util import get_conf
 
 conf = get_conf()
-search_url = os.environ.get("FUZI_SEARCH_URL", conf["search"]["url"])
-nlu_url = os.environ.get("FUZI_NLU_URL", conf["nlu"]["url"])
+
+search_host = os.environ.get("FUZI_SEARCH_SERVICE_HOST")
+search_port = os.environ.get("FUZI_SEARCH_SERVICE_PORT")
+if search_host and search_port:
+    search_url = f"http://{search_host}:{search_port}"
+else:
+    search_url = conf["search"]["url"]
+
+nlu_host = os.environ.get("FUZI_NLU_SERVICE_HOST")
+nlu_port = os.environ.get("FUZI_NLU_SERVICE_PORT")
+if nlu_host and nlu_port:
+    nlu_url = f"http://{nlu_host}:{nlu_port}"
+else:
+    nlu_url = conf["nlu"]["url"]
 
 
 async def post_search(question, threshold=0.9, limit=1):

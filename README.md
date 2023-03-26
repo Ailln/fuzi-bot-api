@@ -62,7 +62,7 @@ cd fuzi-bot-api
 kubectl apply -f deploy/deployment.yaml
 ```
 
-### 4 QPS Test
+## 4 QPS Test
 
 ```shell
 pip install locust -U
@@ -71,7 +71,11 @@ locust -f test/qps_test.py -H http://127.0.0.1:8080 -u 10 -r 2
 # 打开 http://0.0.0.0:8089
 ```
 
-## 5 许可证
+## 5 To Do
+
+- [ ] 聊天数据记录
+
+## 6 许可证
 
 [![](https://award.dovolopor.com?lt=License&rt=Apache2&rbc=orange)](./LICENSE)
 [![](https://award.dovolopor.com?lt=Ailln's&rt=idea&lbc=lightgray&rbc=red&ltc=red)](https://github.com/Ailln/award)

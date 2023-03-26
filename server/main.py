@@ -19,24 +19,37 @@ answer_dict = conf["nlg"]["answer"]
 
 @sio.on("chat-request")
 async def chat_index(sid, data):
-    logger.info(f"chat-request # question: {data}")
+    logger.info(f"chat-request # data: {data}")
     try:
-        if "@@" in data:
-            model_type, _msg = data.split("@@")
-            if model_type in ["JointNLU", "ChatGLM-6B", "ChatGPT"]:
-                data = _msg
+        model_type = data["modelType"]
+        messages = data["messages"]
+        if model_type == "JointNLU":
+            content = None
+            for message in reversed(messages):
+                if message["role"] == "user":
+                    content = message["content"]
+                    break
+
+            if content is not None:
+                result = await post_search(content)
+                if len(result) == 1:
+                    intent = result[0]["intent"]
+                else:
+                    intent = await post_nlu(data)
+                answer = {
+                    "role": "bot",
+                    "content": answer_dict[intent]
+                }
+                logger.info(f"chat-request # answer: {answer}")
+                await sio.emit(event="chat-reply", data=answer, to=sid)
             else:
-                raise Exception(f"model type {model_type} not found!")
-
-        result = await post_search(data)
-        if len(result) == 1:
-            intent = result[0]["intent"]
+                raise ValueError("no user message")
         else:
-            intent = await post_nlu(data)
-        answer = answer_dict[intent]
+            await sio.emit(event="chat-reply", data={
+                "role": "bot",
+                "content": "ERROR: this model type not support!"
+            }, to=sid)
 
-        logger.info(f"chat-request # answer: {answer}")
-        await sio.emit(event="chat-reply", data=answer, to=sid)
     except Exception as e:
         logger.error(str(e))
         await sio.emit(event="error", data=str(e), to=sid)
