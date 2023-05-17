@@ -1,7 +1,7 @@
 import os
-from requests import get, post
+from requests import post
 
-from util.conf_util import get_conf
+from util.conf import get_conf
 
 conf = get_conf()
 
@@ -30,7 +30,6 @@ async def post_search(question, threshold=0.9, limit=1):
             raise Exception(res_data["message"])
     else:
         raise Exception(f"post search request failed! code {res.status_code}")
-
     return result
 
 
@@ -44,19 +43,4 @@ async def post_nlu(question):
             raise Exception(res_data["message"])
     else:
         raise Exception(f"post nlu request failed! code {res.status_code}")
-
     return intent
-
-
-def get_questions():
-    res = get(f"{nlu_url}/questions")
-    if res.status_code == 200:
-        res_data = res.json()
-        if res_data["status"] == 1:
-            questions = res_data["data"]
-        else:
-            raise Exception(res_data["message"])
-    else:
-        raise Exception(f"get questions request failed! code {res.status_code}")
-
-    return questions
